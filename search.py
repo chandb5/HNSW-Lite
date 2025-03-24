@@ -1,11 +1,14 @@
-from hnsw.distance import Distance
-from node import Node
+from .distance import Distance
+from .node import Node
+from typing import List
+import heapq
+import numpy as np
 
 class Search:
     def __init__(self):
         self.distance_obj = Distance("cosine")
 
-    def search_neighbours_simple(self, query, candidates, top_n):
+    def search_neighbours_simple(self, query: np.array, candidates: List[Node], top_n: int):
         """
         Search for the nearest neighbors of the query vector, from a list of candidate vectors.
         :param query: The query vector.
@@ -15,14 +18,14 @@ class Search:
         """
         distances = []
         for c in candidates:
-            dst = self.distance_obj.distance(query, c)
+            dst = self.distance_obj.distance(query, c.vector)
             distances.append((c, dst))
         
         distances.sort(key=lambda x: x[1])
         nearest_neighbors = distances[:top_n]
         return nearest_neighbors
     
-    def search_layer(self, query, entry_point: Node, top_n: int):
+    def search_layer(self, query: np.array, entry_point: Node, top_n: int, level: int):
         """
         Search for the nearest neighbors of the query vector in a specific layer.
         :param query: The query vector.
@@ -32,6 +35,37 @@ class Search:
         """
         visited = set()
         visited.add(entry_point)
-        candidates = [entry_point]
-        neighbours = [entry_point]
-        return self.search_neighbours_simple(query, candidates, top_n)
+        candidates = []
+        # min heap to store the closest candidates
+        heapq.heappush(candidates, (entry_point.distance(query), entry_point))
+        
+        # max heap to store the best neighbours
+        best_neighbours = []
+        heapq.heappush(best_neighbours, (-entry_point.distance(query), entry_point))
+
+        while len(candidates) > 0:
+            # closest candidate to the query vector
+            distance, current = heapq.heappop(candidates)
+
+            # get farthest possible neighbour
+            farthest_best_neighbour = -best_neighbours[0][0] if len(best_neighbours) > 0 else float('inf')
+
+            if distance > farthest_best_neighbour:
+                break # all elements in candidates are farther than the best neighbour
+
+            for node in current.neighbors[level]:
+                if node not in visited and not node.is_deleted:
+                    visited.add(node)
+                    furthest_distance = -best_neighbours[0][0] if len(best_neighbours) > 0 else float('inf')
+                    
+                    if node.distance(query) < furthest_distance or len(best_neighbours) < top_n:
+                        heapq.heappush(candidates, (node.distance(query), node))
+                        print(type(node.distance(query)))
+                        print(node.distance(query))
+                        print(node.vector)
+                        heapq.heappush(best_neighbours, (-node.distance(query), node))
+                    
+                        if len(best_neighbours) > top_n:
+                            heapq.heappop(best_neighbours)
+
+        return best_neighbours

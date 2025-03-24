@@ -1,12 +1,16 @@
-from typing import List, Union
-from distance import Distance
+import numpy as np
+
+from typing import List, Dict
+from .distance import Distance
 
 class Node:
     def __init__(self, vector: List[float], level: int, neighbours = None):
-        self.vector = vector
+        self.vector = np.array(vector)
         self.level = level
-        self.neighbors = neighbours if neighbours else []
+        self.neighbors: Dict[int, List["Node"]] = {i: [] for i in range(level + 1)}
         self.is_deleted = False
+        # we use magnitude just as comparator in case of ties
+        self.magnitude = np.linalg.norm(self.vector)
 
     def get_nearest_elements(self, query: List[float], candidates: List['Node'], top_n: int):
         distance_obj = Distance("cosine")
@@ -23,4 +27,12 @@ class Node:
         distance_obj = Distance("cosine")
         if isinstance(query, Node):
             return distance_obj.distance(query.vector, self.vector)
-        return distance_obj.distance(query, self.vector)
+        else:
+            query = np.array(query)
+            return distance_obj.distance(query, self.vector)
+        
+    def __lt__(self, other: 'Node'):
+        return self.magnitude < other.magnitude
+    
+    def __gt__(self, other: 'Node'):
+        return self.magnitude > other.magnitude
