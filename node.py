@@ -4,9 +4,10 @@ from typing import List, Dict
 from .distance import Distance
 
 class Node:
-    def __init__(self, vector: List[float], level: int, neighbours = None):
+    def __init__(self, vector: List[float], level: int, label = None, neighbours = None):
         self.vector = np.array(vector)
         self.level = level
+        self.label = None
         self.neighbors: Dict[int, List["Node"]] = {i: [] for i in range(level + 1)}
         self.is_deleted = False
         # we use magnitude just as comparator in case of ties

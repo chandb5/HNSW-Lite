@@ -90,6 +90,23 @@ class HNSW:
             self.top_layer = level
             self.entry_point = query_node
 
+    def knn_search(self, query: List[float], top_n: int):
+        """
+        Search for the k-nearest neighbors of the query vector.
+        :param query: The query vector.
+        :param top_n: The number of nearest neighbors to return.
+        :return: The top n nearest neighbors.
+        """
+        entry_point = self.entry_point
+        top_layer = self.top_layer
+
+        for layer in range(top_layer, -1, -1):
+            best_candidate = self.search_obj.search_layer(query, entry_point, 1, layer)[0][1]
+            entry_point = best_candidate
+
+        neighbours = self.search_obj.search_layer(query, entry_point, top_n, 0)
+        return neighbours
+
     def __private_get_random_level(self):
         """
         Get a random level for the new node.
