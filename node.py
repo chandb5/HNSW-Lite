@@ -23,8 +23,8 @@ class Node:
         nearest_neighbors = distances[:top_n]
         return nearest_neighbors
 
-    def distance(self, query: List[float] | 'Node') -> float:
-        distance_obj = Distance("cosine")
+    def distance(self, query: List[float] | 'Node', space: str = "cosine") -> float:
+        distance_obj = Distance(space)
         if isinstance(query, Node):
             return distance_obj.distance(query.vector, self.vector)
         else:
