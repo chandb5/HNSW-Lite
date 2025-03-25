@@ -1,14 +1,16 @@
 from .distance import Distance
 from .node import Node
 from typing import List
+from numpy.typing import NDArray
 import heapq
 import numpy as np
+
 
 class Search:
     def __init__(self):
         self.distance_obj = Distance("cosine")
 
-    def search_neighbours_simple(self, query: np.array, candidates: List[Node], top_n: int):
+    def search_neighbours_simple(self, query: NDArray[np.float64], candidates: List[Node], top_n: int) -> List[Node]:
         """
         Search for the nearest neighbors of the query vector, from a list of candidate vectors.
         :param query: The query vector.
@@ -23,9 +25,11 @@ class Search:
         
         distances.sort(key=lambda x: x[1])
         nearest_neighbors = distances[:top_n]
-        return nearest_neighbors
+
+        neighbors = [node for node, _ in nearest_neighbors]
+        return neighbors
     
-    def search_layer(self, query: np.array, entry_point: Node, top_n: int, level: int):
+    def search_layer(self, query: NDArray[np.float64], entry_point: Node, top_n: int, level: int) -> List[tuple[int, Node]]:
         """
         Search for the nearest neighbors of the query vector in a specific layer.
         :param query: The query vector.
@@ -60,12 +64,9 @@ class Search:
                     
                     if node.distance(query) < furthest_distance or len(best_neighbours) < top_n:
                         heapq.heappush(candidates, (node.distance(query), node))
-                        print(type(node.distance(query)))
-                        print(node.distance(query))
-                        print(node.vector)
                         heapq.heappush(best_neighbours, (-node.distance(query), node))
                     
                         if len(best_neighbours) > top_n:
                             heapq.heappop(best_neighbours)
 
-        return best_neighbours
+        return heapq.nlargest(top_n, best_neighbours)
