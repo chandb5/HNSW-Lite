@@ -9,7 +9,8 @@ from .search import Search
 class HNSW:
     def __init__(self, space: str = "cosine", M: int = 16, ef_construction: int = 200):
         self.space = space
-        self.search_obj = Search()
+        self.distance_cache = {}
+        self.search_obj = Search(self.distance_cache)
         self.entry_point = None
         self.bottom_layer = 0
         self.top_layer = 0

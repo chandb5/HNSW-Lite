@@ -1,13 +1,14 @@
 from .distance import Distance
 from .node import Node
-from typing import List
+from typing import List, Dict
 from numpy.typing import NDArray
 import heapq
 import numpy as np
 
 
 class Search:
-    def __init__(self):
+    def __init__(self, distance_cache: Dict):
+        self.distance_cache = distance_cache
         self.distance_obj = Distance("cosine")
 
     def search_neighbours_simple(self, query: NDArray[np.float64], candidates: List[Node], top_n: int) -> List[Node]:
@@ -67,9 +68,16 @@ class Search:
 
                     if node_query_distance < furthest_distance or len(best_neighbours) < top_n:
                         heapq.heappush(candidates, (node_query_distance, node))
-                        heapq.heappush(best_neighbours, (-node_query_distance, node))
-                    
-                        if len(best_neighbours) > top_n:
-                            heapq.heappop(best_neighbours)
+                        if len(best_neighbours) + 1 > top_n:
+                            heapq.heappushpop(best_neighbours, (-node_query_distance, node))
+                        else:
+                            heapq.heappush(best_neighbours, (-node_query_distance, node))
 
         return heapq.nlargest(top_n, best_neighbours)
+
+    def _get_distance(self, node, query):
+        if node in self.distance_cache:
+            return self.distance_cache[node.id]
+        else:
+            distance = self.distance_obj.distance(node.vector, query)
+            self.distance_cache[node] = distance
