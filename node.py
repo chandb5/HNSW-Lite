@@ -4,10 +4,15 @@ from typing import List, Dict
 from .distance import Distance
 
 class Node:
-    def __init__(self, vector: List[float], level: int, label = None, neighbours = None):
+    _global_id = 0
+
+    def __init__(self, vector: List[float], level: int, metadata = None, neighbours = None):
+        self.id = Node._global_id
+        Node._global_id += 1
+        
         self.vector = np.array(vector)
         self.level = level
-        self.label = None
+        self.metadata = metadata
         self.neighbors: Dict[int, List["Node"]] = {i: [] for i in range(level + 1)}
         self.is_deleted = False
         # we use magnitude just as comparator in case of ties
@@ -37,3 +42,9 @@ class Node:
     
     def __gt__(self, other: 'Node'):
         return self.magnitude > other.magnitude
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        return isinstance(other, Node) and self.id == other.id

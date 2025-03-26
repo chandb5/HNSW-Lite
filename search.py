@@ -40,12 +40,13 @@ class Search:
         visited = set()
         visited.add(entry_point)
         candidates = []
+        entry_point_query_distance = entry_point.distance(query)
         # min heap to store the closest candidates
-        heapq.heappush(candidates, (entry_point.distance(query), entry_point))
+        heapq.heappush(candidates, (entry_point_query_distance, entry_point))
         
         # max heap to store the best neighbours
         best_neighbours = []
-        heapq.heappush(best_neighbours, (-entry_point.distance(query), entry_point))
+        heapq.heappush(best_neighbours, (-entry_point_query_distance, entry_point))
 
         while len(candidates) > 0:
             # closest candidate to the query vector
@@ -62,9 +63,11 @@ class Search:
                     visited.add(node)
                     furthest_distance = -best_neighbours[0][0] if len(best_neighbours) > 0 else float('inf')
                     
-                    if node.distance(query) < furthest_distance or len(best_neighbours) < top_n:
-                        heapq.heappush(candidates, (node.distance(query), node))
-                        heapq.heappush(best_neighbours, (-node.distance(query), node))
+                    node_query_distance = node.distance(query)
+
+                    if node_query_distance < furthest_distance or len(best_neighbours) < top_n:
+                        heapq.heappush(candidates, (node_query_distance, node))
+                        heapq.heappush(best_neighbours, (-node_query_distance, node))
                     
                         if len(best_neighbours) > top_n:
                             heapq.heappop(best_neighbours)

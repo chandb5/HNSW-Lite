@@ -5,6 +5,7 @@ from typing import List, Dict
 from .node import Node
 from .search import Search
 
+
 class HNSW:
     def __init__(self, space: str = "cosine", M: int = 16, ef_construction: int = 200):
         self.space = space
@@ -13,13 +14,13 @@ class HNSW:
         self.bottom_layer = 0
         self.top_layer = 0
         self.layered_graph: Dict[int, List[Node]] = {}
-        
+
         # Setting hyperparameters
         # desired number of connections per node
         self.m = M
-        
+
         # max number of connections per node for layer > 0
-        self.mMax = self.m 
+        self.mMax = self.m
 
         # max number of connections per node for layer 0 - typically 2*M
         self.m0 = 2 * self.m
@@ -29,14 +30,14 @@ class HNSW:
 
         self.ef_construction = ef_construction
 
-    def insert(self, query: List[float]):
+    def insert(self, query: List[float], metadata: Dict = {}):
         """
         Insert a new vector into the graph.
         :param query: The vector to be inserted.
         """
 
         level = self.__private_get_random_level()
-        query_node = Node(query, level)
+        query_node = Node(query, level, metadata)
 
         if self.entry_point is None:
             self.entry_point = query_node
@@ -49,18 +50,21 @@ class HNSW:
         # Upper-layer search (zoom-out phase)
         # This loop only runs if level < top_layer.
         for layer in range(top_layer, level, -1):
-            print(f"Upper-layer: {layer}")
             # Perform greedy search in current layer, update entry_point
-            best_candidate = self.search_obj.search_layer(query_node.vector, entry_point, self.ef_construction, layer)[0][1]
-            print(f"Best neighbor at layer {layer}: {best_candidate}")
+            best_candidate = self.search_obj.search_layer(
+                query_node.vector, entry_point, self.ef_construction, layer
+            )[0][1]
             entry_point = best_candidate
 
         # Lower-layer search and insertion (zoom-in phase)
         for layer in range(min(top_layer, level), bottom_layer - 1, -1):
-            print(f"Lower-layer: {layer}")
-            W_dst = self.search_obj.search_layer(query_node.vector, entry_point, self.ef_construction, layer)
+            W_dst = self.search_obj.search_layer(
+                query_node.vector, entry_point, self.ef_construction, layer
+            )
             W = [node for _, node in W_dst]
-            neighbours = self.search_obj.search_neighbours_simple(query_node.vector, W, self.m)
+            neighbours = self.search_obj.search_neighbours_simple(
+                query_node.vector, W, self.m
+            )
 
             for node in neighbours:
                 if node not in query_node.neighbors[layer]:
@@ -72,7 +76,9 @@ class HNSW:
                 eConn = e.neighbors[layer]
                 if len(eConn) > self.mMax:
                     local_mMax = self.mMax if layer > 0 else self.m0
-                    eNewConn = self.search_obj.search_neighbours_simple(e.vector, eConn, local_mMax)
+                    eNewConn = self.search_obj.search_neighbours_simple(
+                        e.vector, eConn, local_mMax
+                    )
                     e.neighbors[layer] = eNewConn
 
             # Update entry point using best candidate from current candidate list W
@@ -101,7 +107,9 @@ class HNSW:
         top_layer = self.top_layer
 
         for layer in range(top_layer, -1, -1):
-            best_candidate = self.search_obj.search_layer(query, entry_point, 1, layer)[0][1]
+            best_candidate = self.search_obj.search_layer(query, entry_point, 1, layer)[
+                0
+            ][1]
             entry_point = best_candidate
 
         neighbours = self.search_obj.search_layer(query, entry_point, top_n, 0)
