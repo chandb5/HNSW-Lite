@@ -53,18 +53,18 @@ class HNSW:
         for layer in range(top_layer, level, -1):
             # Perform greedy search in current layer, update entry_point
             best_candidate = self.search_obj.search_layer(
-                query_node.vector, entry_point, self.ef_construction, layer
+                query_node, entry_point, self.ef_construction, layer
             )[0][1]
             entry_point = best_candidate
 
         # Lower-layer search and insertion (zoom-in phase)
         for layer in range(min(top_layer, level), bottom_layer - 1, -1):
             W_dst = self.search_obj.search_layer(
-                query_node.vector, entry_point, self.ef_construction, layer
+                query_node, entry_point, self.ef_construction, layer
             )
             W = [node for _, node in W_dst]
             neighbours = self.search_obj.search_neighbours_simple(
-                query_node.vector, W, self.m
+                query_node, W, self.m
             )
 
             for node in neighbours:
@@ -78,7 +78,7 @@ class HNSW:
                 if len(eConn) > self.mMax:
                     local_mMax = self.mMax if layer > 0 else self.m0
                     eNewConn = self.search_obj.search_neighbours_simple(
-                        e.vector, eConn, local_mMax
+                        e, eConn, local_mMax
                     )
                     e.neighbors[layer] = eNewConn
 
@@ -97,7 +97,7 @@ class HNSW:
             self.top_layer = level
             self.entry_point = query_node
 
-    def knn_search(self, query: List[float], top_n: int):
+    def knn_search(self, query: Node, top_n: int):
         """
         Search for the k-nearest neighbors of the query vector.
         :param query: The query vector.

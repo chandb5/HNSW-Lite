@@ -13,7 +13,7 @@ class Distance:
         """
         self.space = space
 
-    def distance(self, vector_A: np.array, vector_B: np.array) -> float:
+    def distance(self, nodeA, nodeB) -> float:
         """
         Calculate the distance between two vectors.
         :param vector_A: The first vector.
@@ -21,13 +21,13 @@ class Distance:
         :return: The distance between the two vectors.
         """
         if self.space == "cosine":
-            return self.__private_cosine_distance(vector_A, vector_B)
+            return self.__private_cosine_distance(nodeA, nodeB)
         elif self.space == "euclidean": 
-            return self.__private_euclidean_distance(vector_A, vector_B)
+            return self.__private_euclidean_distance(nodeA.vector, nodeB.vector)
         else:
             raise ValueError("Invalid distance space. Please use 'cosine' or 'euclidean'.")
 
-    def __private_cosine_distance(self, vector_A: np.array, vector_B: np.array) -> float:
+    def __private_cosine_distance(self, nodeA, nodeB) -> float:
         """
         Calculate the cosine distance between two vectors.
         Represented as: 1 - cosine_similarity
@@ -35,7 +35,7 @@ class Distance:
         :param vector_B: The second vector.
         :return: The cosine distance between the two vectors.
         """
-        cosine_similarity = np.dot(vector_A, vector_B) / (np.linalg.norm(vector_A) * np.linalg.norm(vector_B))
+        cosine_similarity = np.dot(nodeA.vector, nodeB.vector) / (nodeA.magnitude * nodeB.magnitude)
         cosine_distance = 1 - cosine_similarity
         return cosine_distance
 
