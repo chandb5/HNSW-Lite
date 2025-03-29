@@ -37,7 +37,7 @@ class HNSW:
         :param query: The vector to be inserted.
         """
 
-        level = self.__private_get_random_level()
+        level = self.__get_random_level()
         query_node = Node(query, level, metadata)
 
         if self.entry_point is None:
@@ -116,7 +116,7 @@ class HNSW:
         neighbours = self.search_obj.search_layer(query, entry_point, top_n, 0)
         return neighbours
 
-    def __private_get_random_level(self):
+    def __get_random_level(self):
         """
         Get a random level for the new node.
         :return: The random level.

@@ -45,7 +45,7 @@ class TestDistance(unittest.TestCase):
     def test_euclidean_distance(self):
         """Test euclidean distance calculation."""
         self.assertAlmostEqual(
-            self.distance_euclidean._Distance__private_euclidean_distance(
+            self.distance_euclidean._Distance__euclidean_distance(
                 self.node1.vector, self.node2.vector
             ),
             np.sqrt(2),
@@ -53,7 +53,7 @@ class TestDistance(unittest.TestCase):
         )
         
         self.assertAlmostEqual(
-            self.distance_euclidean._Distance__private_euclidean_distance(
+            self.distance_euclidean._Distance__euclidean_distance(
                 self.node1.vector, self.node1.vector
             ),
             0.0,
@@ -61,7 +61,7 @@ class TestDistance(unittest.TestCase):
         )
         
         self.assertAlmostEqual(
-            self.distance_euclidean._Distance__private_euclidean_distance(
+            self.distance_euclidean._Distance__euclidean_distance(
                 self.node1.vector, self.node4.vector
             ),
             0.5,
