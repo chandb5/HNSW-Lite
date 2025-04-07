@@ -63,9 +63,7 @@ class HNSW:
                 query_node, entry_point, self.ef_construction, layer
             )
             W = [node for _, node in W_dst]
-            neighbours = self.search_obj.search_neighbours_simple(
-                query_node, W, self.m
-            )
+            neighbours = self.search_obj.search_neighbours_simple(query_node, W, self.m)
 
             for node in neighbours:
                 if node not in query_node.neighbors[layer]:

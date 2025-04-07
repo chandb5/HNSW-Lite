@@ -3,13 +3,14 @@ import numpy as np
 from typing import List, Dict
 from .distance import Distance
 
+
 class Node:
     _global_id = 0
 
-    def __init__(self, vector: List[float], level: int, metadata = None, neighbours = None):
+    def __init__(self, vector: List[float], level: int, metadata=None, neighbours=None):
         self.id = Node._global_id
         Node._global_id += 1
-        
+
         self.vector = np.array(vector)
         self.level = level
         self.metadata = metadata
@@ -18,14 +19,14 @@ class Node:
         # we use magnitude just as comparator in case of ties
         self.magnitude = np.linalg.norm(self.vector)
 
-    def distance(self, query: 'Node', space: str = "cosine") -> float:
+    def distance(self, query: "Node", space: str = "cosine") -> float:
         distance_obj = Distance(space)
         return distance_obj.distance(self, query)
-        
-    def __lt__(self, other: 'Node'):
+
+    def __lt__(self, other: "Node"):
         return self.magnitude < other.magnitude
-    
-    def __gt__(self, other: 'Node'):
+
+    def __gt__(self, other: "Node"):
         return self.magnitude > other.magnitude
 
     def __hash__(self):

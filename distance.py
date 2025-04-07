@@ -1,6 +1,7 @@
 import numpy as np
 from typing import List
 
+
 class Distance:
     """
     A class to calculate the distance between two vectors.
@@ -13,7 +14,9 @@ class Distance:
         """
         self.space = space
         if self.space not in ["cosine", "euclidean"]:
-            raise ValueError("Invalid distance space. Please use 'cosine' or 'euclidean'.")
+            raise ValueError(
+                "Invalid distance space. Please use 'cosine' or 'euclidean'."
+            )
 
     def distance(self, nodeA, nodeB) -> float:
         """
@@ -24,7 +27,7 @@ class Distance:
         """
         if self.space == "cosine":
             return self.__cosine_distance(nodeA, nodeB)
-        elif self.space == "euclidean": 
+        elif self.space == "euclidean":
             return self.__euclidean_distance(nodeA.vector, nodeB.vector)
 
     def __cosine_distance(self, nodeA, nodeB) -> float:
@@ -37,7 +40,9 @@ class Distance:
         """
         if nodeA.magnitude == 0 or nodeB.magnitude == 0:
             return 1.0
-        cosine_similarity = np.dot(nodeA.vector, nodeB.vector) / (nodeA.magnitude * nodeB.magnitude)
+        cosine_similarity = np.dot(nodeA.vector, nodeB.vector) / (
+            nodeA.magnitude * nodeB.magnitude
+        )
         cosine_distance = 1 - cosine_similarity
         return cosine_distance
 
