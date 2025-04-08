@@ -19,7 +19,7 @@ class Search:
         :param query: The query vector.
         :param candidates: The candidate vectors to search from.
         :param top_n: The number of nearest neighbors to return.
-        :return: The top n nearest neighbors.
+        :return: The top n nearest neighbors. Tuple of (distance, node).
         """
         distances = []
         for c in candidates:
@@ -37,10 +37,11 @@ class Search:
     ) -> List[tuple[int, Node]]:
         """
         Search for the nearest neighbors of the query vector in a specific layer.
-        :param query: The query vector.
-        :param node: The node containing the candidate vectors.
+        :param query_node: The query vector.
+        :param entry_point: The entry point for the search.
         :param top_n: The number of nearest neighbors to return.
-        :return: The top n nearest neighbors.
+        :param level: The layer to search in.
+        :return: The top n nearest neighbors. Tuple of (distance, node).
         """
         visited = set()
         visited.add(entry_point)

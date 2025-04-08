@@ -35,6 +35,8 @@ class HNSW:
         """
         Insert a new vector into the graph.
         :param query: The vector to be inserted.
+        :param metadata: Metadata associated with the vector.
+        :return: None
         """
 
         level = self.__get_random_level()
