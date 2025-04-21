@@ -1,7 +1,7 @@
 import numpy as np
 
 from typing import List, Dict
-from .distance import Distance
+from distance import Distance
 
 
 class Node:

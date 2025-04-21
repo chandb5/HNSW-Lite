@@ -37,7 +37,7 @@ pip install hnsw-lite
 
 ```python
 import numpy as np
-from hnsw.hnsw import HNSW
+from hnsw import HNSW
 
 # Initialize HNSW index
 hnsw = HNSW(space="cosine", M=16, ef_construction=200)
@@ -115,7 +115,7 @@ The M parameter (maximum number of connections per node) is crucial for balancin
 
 #### Recall vs M Value
 
-![Recall by M Value](./plots/m-val-recall.png)
+![Recall by M Value](https://raw.githubusercontent.com/chandb5/HNSW-Lite/refs/heads/main/plots/m-val-recall.png)
 
 As shown in the graph:
 - M=5: 86.91% recall 
@@ -129,7 +129,7 @@ The biggest improvements occur when increasing M from 5 to 15. After M=20, the r
 
 #### Query Processing Time vs M Value
 
-![Processing Time by M Value](./plots/m-val-time.png)
+![Processing Time by M Value](https://raw.githubusercontent.com/chandb5/HNSW-Lite/refs/heads/main/plots/m-val-time.png)
 
 Processing time increases with higher M values:
 - M=5: 0.457 ms
@@ -141,7 +141,7 @@ Processing time increases with higher M values:
 
 ### Comparison with Other Algorithms
 
-![SIFT Query Performance Comparison](./plots/sift-time.png)
+![SIFT Query Performance Comparison](https://raw.githubusercontent.com/chandb5/HNSW-Lite/refs/heads/main/plots/sift-time.png)
 
 When comparing HNSW-Lite with other algorithms (FAISS, MRPT) on the SIFT dataset:
 - HNSW consistently delivers sub-2ms query times regardless of dataset size

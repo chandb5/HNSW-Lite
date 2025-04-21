@@ -2,8 +2,8 @@ import math
 import numpy as np
 from typing import List, Dict
 
-from .node import Node
-from .search import Search
+from node import Node
+from search import Search
 
 
 class HNSW:

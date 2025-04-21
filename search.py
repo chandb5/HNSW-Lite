@@ -1,5 +1,5 @@
-from .distance import Distance
-from .node import Node
+from distance import Distance
+from node import Node
 from typing import List, Dict
 import heapq
 
