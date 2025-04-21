@@ -1,9 +1,7 @@
 from .distance import Distance
 from .node import Node
 from typing import List, Dict
-from numpy.typing import NDArray
 import heapq
-import numpy as np
 
 
 class Search:
