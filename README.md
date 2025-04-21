@@ -2,8 +2,8 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/hnsw-lite.svg)](https://pypi.org/project/hnsw-lite/)
 [![Python versions](https://img.shields.io/pypi/pyversions/hnsw-lite.svg)](https://pypi.org/project/hnsw-lite/)
-[![License](https://img.shields.io/github/license/chandb5/hnsw-lite.svg)](https://github.com/chandb5/hnsw-lite/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/pypi/dm/hnsw-lite.svg)](https://pypi.org/project/hnsw-lite/)
+[![License](https://img.shields.io/pypi/l/hnsw-lite)](https://github.com/chandb5/hnsw-lite/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/pepy/dt/hnsw-lite)](https://pypi.org/project/hnsw-lite/)
 
 A lightweight, pure Python implementation of Hierarchical Navigable Small World (HNSW) algorithm for approximate nearest neighbor search.
 
